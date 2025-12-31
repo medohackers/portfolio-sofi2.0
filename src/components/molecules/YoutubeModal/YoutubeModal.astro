@@ -1,28 +1,45 @@
 ---
-import { fetchYouTubeVideos } from "@src/services/youtubeLatestVid";
+import { fetchLatestYouTubeVideo } from "@src/services/youtube";
 import { YouTube } from "astro-embed";
-const channelId = "UC36_js-krsAHAEAWpEDhHtw";
-const videoData = await fetchYouTubeVideos(channelId);
-const { thumbnail, guid } = videoData[0];
-const videoId = guid.replace("yt:video:", "");
+
+
+const videoData = await fetchLatestYouTubeVideo();
+
+// Handle case when no video is found
+if (!videoData) {
+  console.warn("No YouTube video available to display");
+}
+
+const { id: videoId, thumbnail, title } = videoData || { id: "", thumbnail: "", title: "" };
 ---
 
-<script >
+<script>
   import { loadVideo } from "@controllers/VideoModal.controller";
   loadVideo();
 </script>
 
-<section class="youtube__modal__box">
-  <div class="modal__close__button"></div>
-  <div class="modal__container">
-    <YouTube
-      id={videoId}
-      class="latestVideoEmbed"
-      poster={thumbnail}
-      title="My Latest Youtube video"
-    />
-  </div>
-</section>
+{
+  videoData ? (
+    <section class="youtube__modal__box">
+      <div class="modal__close__button" />
+      <div class="modal__container">
+        <YouTube
+          id={videoId}
+          class="latestVideoEmbed"
+          poster={thumbnail}
+          title={title || "Latest YouTube Video"}
+        />
+      </div>
+    </section>
+  ) : (
+    <section class="youtube__modal__box">
+      <div class="modal__close__button" />
+      <div class="modal__container">
+        <p>No video available at the moment</p>
+      </div>
+    </section>
+  )
+}
 <style is:inline>
   lite-youtube {
     min-width: 100%;
