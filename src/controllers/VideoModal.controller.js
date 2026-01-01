@@ -9,10 +9,12 @@ const initializeModal = (liteYoutube) => {
   const dialog = document.querySelector(".youtube__modal__box");
 
   btnOpenModal.addEventListener("click", () => {
+    dialog.setAttribute("open", "true");
     dialog.style.display = "flex";
   });
 
   closeModalBtn.addEventListener("click", () => {
+    dialog.removeAttribute("open");
     dialog.style.display = "none";
     const Video = liteYoutube.querySelector("iframe");
     if (Video) {

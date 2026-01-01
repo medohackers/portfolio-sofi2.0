@@ -1,8 +1,11 @@
 ---
 ---
 <script>
-  import { theme } from "@src/controllers/themeToggle.controller";
-</script>
+  const themeToggle = document.getElementById("themeToggle");
+  themeToggle?.addEventListener("click", () => {
+    document.documentElement.classList.toggle("dark");
+  });
+  </script>
 
 <button id="themeToggle">
   <iconify-icon
@@ -20,7 +23,7 @@
 </button>
 
 <style lang="scss">
-  @use "@sass/variables" as v;
+  @use "@sass/variables" as *;
   #themeToggle {
     display: grid;
     place-content: center;
@@ -31,7 +34,7 @@
     top: 86%;
     right: 0;
     border-radius: 50%;
-    border: 2px solid v.$french-violet;
+    border: 2px solid rgb($french-violet);
     background: rgba(29, 29, 29, 0.121);
     backdrop-filter: blur(30px);
     cursor: pointer;

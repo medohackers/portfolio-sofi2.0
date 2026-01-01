@@ -2,15 +2,11 @@
 import { portfolioCardsData } from "@services/getPortfolioCards";
 import Title from "@src/components/atoms/Title/Title";
 import CardPortfolio from "@molecules/CardPortfolio/CardPortfolio.astro";
-import defaultImage from "@img/metaBanner.webp";
 import PortfolioModal from "./portfolioModal/PortfolioModal.astro";
 
 const mainData = await portfolioCardsData();
 
 const { cardsLength = 6 } = Astro.props;
-
-
-
 
 ---
 
@@ -23,47 +19,17 @@ const { cardsLength = 6 } = Astro.props;
         .slice(0, cardsLength)
         .map((data) =>
         <CardPortfolio {...data} />
-        <PortfolioModal {...data} />
       )
-
     }
   </div>
-
+    `{
+          mainData.length > 3 && (
+          <a class="portfolio__projects-btn" href="/projects">Ver todos</a>
+        )
+    }`
+  <PortfolioModal  />
 </section>
 
-<script>
-  const buttons = document.querySelectorAll(".card__btn");
-  const modals = document.querySelectorAll(".modal");
-
-  buttons.forEach((btn) => {
-    const slug = btn.getAttribute("data-slug");
-    btn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      // Busca el modal que corresponde a este slug
-      const modal = Array.from(modals).find(
-        (m) => m.getAttribute("data-slug") === slug
-      );
-      if (modal) {
-        modal.setAttribute("open", "open");
-        modal.classList.add("open");
-
-        // Cerrar modal al hacer click en el fondo o en el botón de cerrar
-        const closeBtn = modal.querySelector(".close-btn");
-        const closeModal = (event) => {
-          if (
-            event.target === modal ||
-            event.target === closeBtn
-          ) {
-            modal.removeAttribute("open");
-            modal.classList.remove("open");
-            document.removeEventListener("click", closeModal);
-          }
-        };
-        // Espera un tick para evitar cerrar inmediatamente
-        setTimeout(() => {
-          document.addEventListener("click", closeModal);
-        }, 0);
-      }
-    });
-  });
+<script >
+import "@controllers/portfolioModal.controller.js";
 </script>

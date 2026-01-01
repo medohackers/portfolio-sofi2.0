@@ -2,15 +2,21 @@
 import { fetchLatestYouTubeVideo } from "@src/services/youtube";
 import { YouTube } from "astro-embed";
 
+let videoData;
+try {
+  videoData = await fetchLatestYouTubeVideo();
+} catch (error) {
 
-const videoData = await fetchLatestYouTubeVideo();
-
-// Handle case when no video is found
-if (!videoData) {
-  console.warn("No YouTube video available to display");
+  videoData = null;
 }
+const fallbackVideoId = "bNFQxl92zu8";
+const fallbackThumbnail = videoData.thumbnail
+console.log("Video Data in YoutubeModal:", fallbackThumbnail);
 
-const { id: videoId, thumbnail, title } = videoData || { id: "", thumbnail: "", title: "" };
+const { id: videoId, thumbnail, title } = videoData || {
+  id: fallbackVideoId,
+  thumbnail: fallbackThumbnail
+};
 ---
 
 <script>
@@ -19,26 +25,17 @@ const { id: videoId, thumbnail, title } = videoData || { id: "", thumbnail: "", 
 </script>
 
 {
-  videoData ? (
-    <section class="youtube__modal__box">
-      <div class="modal__close__button" />
-      <div class="modal__container">
-        <YouTube
-          id={videoId}
-          class="latestVideoEmbed"
-          poster={thumbnail}
-          title={title || "Latest YouTube Video"}
-        />
-      </div>
-    </section>
-  ) : (
-    <section class="youtube__modal__box">
-      <div class="modal__close__button" />
-      <div class="modal__container">
-        <p>No video available at the moment</p>
-      </div>
-    </section>
-  )
+  <section class="youtube__modal__box">
+    <div class="modal__close__button" />
+    <div class="modal__container">
+      <YouTube
+        id={videoId}
+        class="latestVideoEmbed"
+        poster={thumbnail}
+        title={title}
+      />
+    </div>
+  </section>
 }
 <style is:inline>
   lite-youtube {

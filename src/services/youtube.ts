@@ -67,6 +67,12 @@ export const fetchLatestYouTubeVideo = async (): Promise<YouTubeVideo | null> =>
 
     const searchResponse = await fetch(searchURL);
 
+    // Handle 403 (quota exceeded) or 500 (server error) - return fallback video
+    if (searchResponse.status === 403 || searchResponse.status === 500) {
+      console.warn(`YouTube API error ${searchResponse.status}, using fallback video`);
+      return getFallbackVideo();
+    }
+
     if (!searchResponse.ok) {
       throw new Error(`YouTube API error: ${searchResponse.status}`);
     }
@@ -74,7 +80,7 @@ export const fetchLatestYouTubeVideo = async (): Promise<YouTubeVideo | null> =>
     const searchData: YouTubeAPIResponse = await searchResponse.json();
 
     if (!searchData.items || searchData.items.length === 0) {
-      return null;
+      return getFallbackVideo();
     }
 
     // Filter out Shorts (videos < 60 seconds)
@@ -103,9 +109,24 @@ export const fetchLatestYouTubeVideo = async (): Promise<YouTubeVideo | null> =>
       };
     }
 
-    return null;
+    return getFallbackVideo();
   } catch (error) {
     console.error("Error fetching YouTube video:", error);
-    throw error;
+    // Return fallback video on any error
+    return getFallbackVideo();
   }
+};
+
+const fallbackVideoId = "bNFQxl92zu8";
+
+/** Fallback video when API fails */
+const getFallbackVideo = (): YouTubeVideo => {
+  return {
+    id: fallbackVideoId,
+    title: "Astro Tema Oscuro Tutorial",
+    description: "Fallback content when YouTube API is unavailable",
+    thumbnail: `https://img.youtube.com/vi/${fallbackVideoId}/hqdefault.jpg`,
+    publishedAt: new Date().toISOString(),
+    duration: "PT15M30S"
+  };
 };

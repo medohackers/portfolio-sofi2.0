@@ -9,7 +9,6 @@
   background: black;
   color: white;
   position: relative;
-  box-shadow: 2px 1px 5px 1.1px rgba(0, 0, 0, 0.68);
   width: 100%;
   &__img {
    height: 160px;
@@ -17,17 +16,17 @@
    object-fit: cover;
    -o-object-position: center 0;
    object-position: center 0;
-   background: #000;
    }
    &__cara--B {
      display: flex;
-     align-items: flex-start;
-     flex-direction: column;
-     background: #140030;
-     transform: translateY(-25px);
-     height: 247px;
-     transition: transform 0.3s linear;
-     padding: 0.2rem 2rem 0.2rem 2rem;
+    align-items: flex-start;
+    flex-direction: column;
+    background: rgba(17, 0, 39, 0.47);
+    backdrop-filter: blur(19px);
+    transform: translateY(-6px);
+    min-height: 254px;
+    transition: transform 0.3s linear;
+    padding: 0.2rem 2rem 0.2rem 2rem;
      .card__title {
        font-size: 2.1rem;
        text-align: left;
@@ -87,13 +86,12 @@
   justify-content: flex-end;
   padding: 0.6rem 2rem;
   transform: translate(20px, -37px);
-  background: #1400302b;
+
   width: fit-content;
   align-self: self-end;
   border-radius: 15px 0 0;
   align-items: center;
   gap: 9px;
-  backdrop-filter: blur(17px);
   left: 74%;
 }
 .card:hover .thecnology {

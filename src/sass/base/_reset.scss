@@ -17,6 +17,10 @@ html {
    font-optical-sizing: auto;
 
  }
+ html:has(dialog[open]) {
+  overflow: hidden;
+}
+
 
  body {
    overflow-x: hidden;
@@ -40,7 +44,7 @@ html {
 
 h2 {
   font-size: 2rem;
-  color : $french-violet;
+  color : rgb($french-violet);
 }
 .MuiTooltip-tooltip {
   font-size: 1.2rem!important;

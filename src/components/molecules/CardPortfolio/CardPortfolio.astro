@@ -10,14 +10,25 @@ const {
   skillIcons,
   slug
 } = Astro.props;
+const data = {
+  title,
+  imgSrc,
+  demoURL,
+  excerpt,
+  repoURL,
+  description,
+  skills,
+  skillIcons,
+  slug
+};
 ---
 
-<article class="card">
+<article class="card" data-modal={JSON.stringify(data)} >
   <div class="card__cara--A">
     <img class="card__img" alt={`Imagen de portada de ${title}`} src={imgSrc} />
   </div>
   <div class="card__cara--B">
-    <div class="thecnology">
+    <div class="thecnology" data-skills={JSON.stringify(skills)} data-icons={JSON.stringify(skillIcons)}>
       {
         skillIcons.map((icon, index) => (
           <div class="skill-item">
