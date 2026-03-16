@@ -1,37 +1,36 @@
+// src/services/data.ts
 import { SITE_URL, LOCAL_URL } from "astro:env/client";
 
-export async function getData(
-  dataType: string = "data",
-  local: boolean = false
-) {
-  // حماية قصوى: لو إحنا في مرحلة الـ Build على فيرسل، استخدم SITE_URL دايماً
-  // حتى لو الكود باعت local = true
-  const isVercel = process.env.VERCEL === '1';
-  const siteUrl = (isVercel || !local) ? SITE_URL : LOCAL_URL;
-
-  // لو لسه الـ siteUrl مش متعرف (حماية من الـ undefined)
-  if (!siteUrl) {
-    console.warn(`Warning: URL for ${dataType} is missing. Using fallback.`);
-    return null; 
-  }
+export async function getData(dataType: string = "data", local: boolean = false) {
+  // حماية: لو إحنا على Vercel، اجبر الكود يستخدم SITE_URL حتى لو الـ Component طلب local
+  const isVercel = import.meta.env.VERCEL === '1' || import.meta.env.NODE_ENV === 'production';
+  
+  // اختيار الرابط مع توفير رابط احتياطي (Fallback)
+  const siteUrl = (isVercel || !local) 
+    ? (SITE_URL || "https://portfolio-sofi2-0.vercel.app") 
+    : (LOCAL_URL || "http://localhost:4322");
 
   const endpoint = dataType !== "data" ? dataType : "all";
   
   try {
-    // بناء الرابط وتنظيفه من أي علامات زيادة
     const baseUrl = siteUrl.replace(/\/$/, '');
     const fullUrl = `${baseUrl}/api/${endpoint}`;
+
+    console.log(`[Data Service] Fetching ${dataType} from: ${fullUrl}`);
 
     const res = await fetch(fullUrl);
     
     if (!res.ok) {
-      throw new Error(`Error ${res.status} fetching ${dataType}`);
+      console.error(`[Data Service] Error ${res.status} for ${dataType}`);
+      return null;
     }
     
     const data = await res.json();
-    return data[dataType];
+    // تأكد إن الـ dataType موجود في الـ JSON اللي راجع
+    return data ? data[dataType] : null;
   } catch (error) {
-    console.error(`Fetch failed for ${dataType}:`, error);
+    console.error(`[Data Service] Failed to fetch ${dataType}:`, error);
     return null;
   }
+}
 }
